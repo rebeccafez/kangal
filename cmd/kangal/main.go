@@ -6,6 +6,7 @@ import (
 
 	"github.com/rebeccafez/kangal/internal/config"
 	"github.com/rebeccafez/kangal/internal/oaiclient"
+	"github.com/rebeccafez/kangal/internal/conversationstore"
 )
 
 func main() {
@@ -13,8 +14,11 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	history := []oaiclient.Message{ oaiclient.Message{Role: "system", Content: cfg.SystemPrompt}, oaiclient.Message{Role: "user", Content: "What continent do kangaroos live on?"} }
+	store := conversationstore.NewConversationStore(cfg.SystemPrompt)
 
+	store.Append(1, oaiclient.Message{Role: "user", Content: "What continent do capybaras live on?"})
+
+	history := store.Get(1)
 	resp, err := oaiclient.CallLLM(ctx, cfg, history)
 
 	if err != nil {
