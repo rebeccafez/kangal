@@ -1,35 +1,35 @@
 package oaiclient
 
 import (
-	"context"
 	"bytes"
+	"context"
 	"encoding/json"
-	"strings"
-	"fmt"
-	"net/http"
-	"io"
 	"errors"
+	"fmt"
+	"io"
+	"net/http"
+	"strings"
 
 	"github.com/rebeccafez/kangal/internal/config"
 )
 
 type Message struct {
-	Role string `json:"role"`
+	Role    string `json:"role"`
 	Content string `json:"content"`
 }
 
 type ChatRequest struct {
-	Model string `json:"model"`
-	Messages []Message `json:"messages"`
-	MaxTokens int `json:"max_tokens,omitempty"`
-	Temperature float64 `json:"temperature"`
-	Stream bool `json:"Stream"`
+	Model       string    `json:"model"`
+	Messages    []Message `json:"messages"`
+	MaxTokens   int       `json:"max_tokens,omitempty"`
+	Temperature float64   `json:"temperature"`
+	Stream      bool      `json:"Stream"`
 }
 
 type ChatResponse struct {
-	Choices []struct{
-		Message Message `json:"message"`
-		FinishReason string `json:"finish_reason"`
+	Choices []struct {
+		Message      Message `json:"message"`
+		FinishReason string  `json:"finish_reason"`
 	} `json:"choices"`
 	Error *struct {
 		Message string `json:"message"`
@@ -37,12 +37,12 @@ type ChatResponse struct {
 }
 
 func CallLLM(ctx context.Context, cfg config.Config, history []Message) (string, error) {
-	payload := ChatRequest {
-		Model: cfg.Model,
-		Messages: history,
-		MaxTokens: cfg.MaxTokens,
+	payload := ChatRequest{
+		Model:       cfg.Model,
+		Messages:    history,
+		MaxTokens:   cfg.MaxTokens,
 		Temperature: cfg.Temperature,
-		Stream: false,
+		Stream:      false,
 	}
 
 	body, err := json.Marshal(payload)

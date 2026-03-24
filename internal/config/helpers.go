@@ -1,9 +1,9 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"os"
-	"fmt"
 )
 
 func mustEnv(key string) string {
