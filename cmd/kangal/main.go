@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/rebeccafez/kangal/internal/config"
+)
 
 func main() {
-	fmt.Println("Hello world")
+	cfg := config.ConfigFromEnv()
+
+	fmt.Printf("%v", cfg)
 }
