@@ -1,28 +1,30 @@
 package main
 
 import (
-	"fmt"
 	"context"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/rebeccafez/kangal/internal/config"
-	"github.com/rebeccafez/kangal/internal/oaiclient"
-	"github.com/rebeccafez/kangal/internal/conversationstore"
+	"github.com/rebeccafez/kangal/internal/telegram"
 )
 
 func main() {
 	cfg := config.ConfigFromEnv()
+	bot := telegram.NewBot(cfg)
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	store := conversationstore.NewConversationStore(cfg.SystemPrompt)
+	sig := make(chan os.Signal, 1)
 
-	store.Append(1, oaiclient.Message{Role: "user", Content: "What continent do capybaras live on?"})
+	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
 
-	history := store.Get(1)
-	resp, err := oaiclient.CallLLM(ctx, cfg, history)
+	go func() {
+		<-sig
+		cancel()
+	}()
 
-	if err != nil {
-	}
-
-	fmt.Printf("%v", resp)
+	bot.Run(ctx)
 }

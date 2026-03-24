@@ -9,7 +9,7 @@ type ConversationStore struct {
 	sysPrompt string
 }
 
-func NewConversationStore(systemPrompt string) *ConversationStore  {
+func NewConversationStore(systemPrompt string) *ConversationStore {
 	return &ConversationStore{
 		histories: make(map[int64][]oaiclient.Message),
 		sysPrompt: systemPrompt,
@@ -20,7 +20,7 @@ func (s *ConversationStore) Get(userID int64) []oaiclient.Message {
 	h, ok := s.histories[userID]
 
 	if !ok {
-		return []oaiclient.Message{{ Role: "system", Content: s.sysPrompt }}
+		return []oaiclient.Message{{Role: "system", Content: s.sysPrompt}}
 	}
 
 	return h
