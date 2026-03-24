@@ -1,7 +1,7 @@
 package conversationstore
 
 import (
-	"github.com/rebeccafez/kangal/oaiclient"
+	"github.com/rebeccafez/kangal/internal/oaiclient"
 )
 
 type ConversationStore struct {
@@ -11,7 +11,7 @@ type ConversationStore struct {
 
 func NewConversationStore(systemPrompt string) *ConversationStore  {
 	return &ConversationStore{
-		histories: make(map[int64][]oaiclient.Message)
+		histories: make(map[int64][]oaiclient.Message),
 		sysPrompt: systemPrompt,
 	}
 }
@@ -20,7 +20,7 @@ func (s *ConversationStore) Get(userID int64) []oaiclient.Message {
 	h, ok := s.histories[userID]
 
 	if !ok {
-		return []oaiclient.Message{{ Role: "system", Content: s.SysPrompt }}
+		return []oaiclient.Message{{ Role: "system", Content: s.sysPrompt }}
 	}
 
 	return h
@@ -29,7 +29,7 @@ func (s *ConversationStore) Get(userID int64) []oaiclient.Message {
 func (s *ConversationStore) Append(userID int64, msg oaiclient.Message) {
 	h := s.Get(userID)
 	h = append(h, msg)
-	s.histories[chatID] = h
+	s.histories[userID] = h
 }
 
 func (s *ConversationStore) Reset(userID int64) {
